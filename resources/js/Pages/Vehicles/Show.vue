@@ -75,6 +75,10 @@ const statusLabels = {
                     </div>
                     <div class="p-6">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div v-if="vehicle.code">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Code véhicule</label>
+                                <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.code }}</p>
+                            </div>
                             <div>
                                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Immatriculation</label>
                                 <p class="mt-1 text-lg font-bold text-slate-800 dark:text-white">{{ vehicle.registration }}</p>
@@ -91,6 +95,22 @@ const statusLabels = {
                                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Modèle</label>
                                 <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.model }}</p>
                             </div>
+                            <div v-if="vehicle.category">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Catégorie</label>
+                                <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.category }}</p>
+                            </div>
+                            <div v-if="vehicle.color">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Couleur</label>
+                                <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.color }}</p>
+                            </div>
+                            <div v-if="vehicle.fuel_type">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Type carburant</label>
+                                <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.fuel_type }}</p>
+                            </div>
+                            <div v-if="vehicle.power !== null && vehicle.power !== undefined">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Puissance</label>
+                                <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.power }}</p>
+                            </div>
                             <div>
                                 <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Capacité</label>
                                 <p class="mt-1 text-lg font-medium text-slate-800 dark:text-white">{{ vehicle.capacity }} places</p>
@@ -104,24 +124,197 @@ const statusLabels = {
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Description</label>
                             <p class="mt-1 text-slate-600 dark:text-slate-300">{{ vehicle.description }}</p>
                         </div>
+                        <div class="mt-6" v-if="vehicle.usage_status || vehicle.rental_amount || vehicle.next_service_km || vehicle.extra_info">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white mb-3">Informations d'utilisation</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div v-if="vehicle.usage_status">
+                                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Statut d'utilisation</label>
+                                    <p class="mt-1 text-slate-700 dark:text-slate-200">{{ vehicle.usage_status }}</p>
+                                </div>
+                                <div v-if="vehicle.rental_amount">
+                                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Montant (Traite / Location)</label>
+                                    <p class="mt-1 text-slate-700 dark:text-slate-200 font-medium">{{ Number(vehicle.rental_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} DHS</p>
+                                </div>
+                                <div v-if="vehicle.next_service_km !== null && vehicle.next_service_km !== undefined">
+                                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Km prochain vidange</label>
+                                    <p class="mt-1 text-slate-700 dark:text-slate-200">{{ vehicle.next_service_km }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Affectation</label>
+                                    <p class="mt-1 text-slate-700 dark:text-slate-200">{{ vehicle.assigned ? 'Oui' : 'Non' }}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4" v-if="vehicle.extra_info">
+                                <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Informations supplémentaires</label>
+                                <p class="mt-1 text-slate-600 dark:text-slate-300 whitespace-pre-line">{{ vehicle.extra_info }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Activity / History Placeholder -->
+                <!-- Fiche papiers véhicule -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden">
                     <div class="p-6 border-b border-slate-200 dark:border-slate-700">
-                        <h3 class="text-lg font-bold text-slate-800 dark:text-white">Historique des Activités</h3>
+                        <h3 class="text-lg font-bold text-slate-800 dark:text-white">Fiche Papiers Véhicule</h3>
                     </div>
-                    <div class="p-6">
-                        <div class="flex flex-col items-center py-8 text-center">
-                            <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
-                                <svg class="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Helper component style blocks -->
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Assurance</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.insurance_start_date ? new Date(vehicle.insurance_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.insurance_end_date ? new Date(vehicle.insurance_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p v-if="vehicle.insurance_company"><span class="font-semibold text-slate-600 dark:text-slate-300">Organisme:</span> {{ vehicle.insurance_company }}</p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.insurance_amount ? Number(vehicle.insurance_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.insurance_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.insurance_daily_charge ? Number(vehicle.insurance_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
                             </div>
-                            <p class="text-slate-500 dark:text-slate-400 font-medium">Aucune activité enregistrée</p>
-                            <p class="text-slate-400 dark:text-slate-500 text-sm mt-1">L'historique des affectations, carburant et charges apparaîtra ici.</p>
-                        </div>
+                        </section>
+
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Visite Technique</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.technical_start_date ? new Date(vehicle.technical_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.technical_end_date ? new Date(vehicle.technical_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.technical_amount ? Number(vehicle.technical_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.technical_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.technical_daily_charge ? Number(vehicle.technical_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Vignette</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.vignette_start_date ? new Date(vehicle.vignette_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.vignette_end_date ? new Date(vehicle.vignette_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.vignette_amount ? Number(vehicle.vignette_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.vignette_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.vignette_daily_charge ? Number(vehicle.vignette_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Carte Grise</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.carte_grise_start_date ? new Date(vehicle.carte_grise_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.carte_grise_end_date ? new Date(vehicle.carte_grise_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.carte_grise_amount ? Number(vehicle.carte_grise_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.carte_grise_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.carte_grise_daily_charge ? Number(vehicle.carte_grise_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Autorisation</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.autorisation_start_date ? new Date(vehicle.autorisation_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.autorisation_end_date ? new Date(vehicle.autorisation_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.autorisation_amount ? Number(vehicle.autorisation_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.autorisation_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.autorisation_daily_charge ? Number(vehicle.autorisation_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </section>
+
+                        <section class="border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+                            <h4 class="text-sm font-bold text-amber-500 mb-3 uppercase tracking-wide">Mouchards</h4>
+                            <div class="space-y-2 text-sm">
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Période:</span>
+                                    <span class="ml-1 text-slate-700 dark:text-slate-200">
+                                        {{ vehicle.mouchard_start_date ? new Date(vehicle.mouchard_start_date).toLocaleDateString('fr-FR') : '-' }}
+                                        <span> → </span>
+                                        {{ vehicle.mouchard_end_date ? new Date(vehicle.mouchard_end_date).toLocaleDateString('fr-FR') : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Montant:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.mouchard_amount ? Number(vehicle.mouchard_amount).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Validité:</span>
+                                    <span class="ml-1">{{ vehicle.mouchard_validity_days ?? '-' }} jours</span>
+                                </p>
+                                <p><span class="font-semibold text-slate-600 dark:text-slate-300">Charge journalière:</span>
+                                    <span class="ml-1">
+                                        {{ vehicle.mouchard_daily_charge ? Number(vehicle.mouchard_daily_charge).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' DHS' : '-' }}
+                                    </span>
+                                </p>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
